@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E LE GAME</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-light bg-primary mb-5">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">E LE GAME</span>
+            <span class="navbar-brand mb-0 h1" id="username-display">Hi, Guest</span>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div id="question-container"></div>
+
+        <div class="text-center mt-4">
+            <button id="prev-btn" class="btn btn-secondary px-4 py-2 me-2" style="display: none;">Previous</button>
+            <button id="next-btn" class="btn btn-primary px-4 py-2" style="display: none;">Next</button>
+            <button id="submit-btn" class="btn btn-success px-4 py-2" style="display: none;">Submit</button>
+            <button id="restart-btn" class="btn btn-danger px-4 py-2" style="display: none;">Restart</button>
+        </div>
+    
+</body>
+
+<script>
+    // Get username from URL
+    const params = new URLSearchParams(window.location.search);
+    const username = params.get("username") || "Guest";
+    document.getElementById("username-display").textContent = "Hi, " + username;
+
+    // Questions with correct answers
+    const questions = [
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า H?",  image: "img/1.png", options:  ["Helium ฮีเลียม", "Hydrogen ไฮโดรเจน", "Lithium ลิเทียม", " boron โบรอน"], answer: "Hydrogen ไฮโดรเจน" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า He?", image: "img/2.png",   options:  ["Hydrogen ไฮโดรเจน", "Helium ฮีเลียม", "Oxygen ออกซิเจน", "Neon นีออน"], answer: "Helium ฮีเลียม" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Li?", image: "img/3.png",  options:  ["Platinum แพลทินัม ", "beryllium เบริลเลียม", " calcium แคลเซียม", "Lithium ลิเทียม"], answer: "Lithium ลิเทียม" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Be?", image: "img/4.png", options:  ["beryllium เบริลเลียม", "Oxygen ออกซิเจน ", "calcium แคลเซียม", "Helium ฮีเลียม"], answer: "beryllium เบริลเลียม" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า B?",  image: "img/5.png",   options:  ["Carbon คาร์บอน", "Oxygen ออกซิเจน", "boron โบรอน", "Helium ฮีเลียม"], answer: "boron โบรอน" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า C?",  image: "img/6.png",  options:  ["Oxygen ออกซิเจน", "Carbon คาร์บอน", "Nitrogen ไนโตรเจน", "beryllium เบริลเลียม"], answer: "Carbon คาร์บอน" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า N?",  image: "img/7.png", options:  ["Hydrogen ไฮโดรเจน", "Oxygen ออกซิเจน", "Nitrogen ไนโตรเจน", "Carbon คาร์บอน"], answer: "Nitrogen ไนโตรเจน" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า O?",  image: "img/8.png",   options:  ["Oxygen ออกซิเจน", "Helium ฮีเลียม", "fluorine ฟลูออรีน", "Hydrogen ไฮโดรเจน"], answer: "Oxygen ออกซิเจน" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า F?",  image: "img/9.png",  options:  ["fluorine ฟลูออรีน", "Nitrogen ไนโตรเจน", "phosphorus ฟอสฟอรัส", "beryllium เบริลเลียม"], answer: "fluorine ฟลูออรีน" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Ne?", image: "img/10.png", options:  ["Neon นีออน", "Carbon คาร์บอน", "Hydrogen ไฮโดรเจน", "Helium ฮีเลียม"], answer: "Neon นีออน" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Na?", image: "img/11.png",   options:  ["Carbon คาร์บอน", "sodium โซเดียม", "Nitrogen ไนโตรเจน", "magnesium แมกนีเซียม"], answer: "sodium โซเดียม" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Mg?", image: "img/12.png",  options:  ["magnesium แมกนีเซียม", "sodium โซเดียม", "Lithium ลิเทียม", "beryllium เบริลเลียม"], answer: "magnesium แมกนีเซียม" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Al?", image: "img/13.png", options:  ["Oxygen ออกซิเจน", "fluorine ฟลูออรีน", "Aluminum อลูมิเนียม", "Nitrogen ไนโตรเจน "], answer: "Aluminum อลูมิเนียม" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Si?", image: "img/14.png",   options:  ["magnesium แมกนีเซียม", "sodium โซเดียม", "Aluminum อลูมิเนียม", "Silicon ซิลิคอน"], answer: "Silicon ซิลิคอน" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า P?",  image: "img/15.png",  options:  ["Oxygen ออกซิเจน", "phosphorus ฟอสฟอรัส", "sodium โซเดียม", "Helium ฮีเลียม"], answer: "phosphorus ฟอสฟอรัส" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า S?",  image: "img/16.png", options:  ["Sulfur  ซัลเฟอร์", "Neon นีออน", "Carbon คาร์บอน", "Lithium ลิเทียม"], answer: "Sulfur  ซัลเฟอร์" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Cl?", image: "img/17.png",   options:  ["Sulfur  ซัลเฟอร์", "phosphorus ฟอสฟอรัส", "chlorine คลอรีน", "magnesium แมกนีเซียม"], answer: "chlorine คลอรีน" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Ar?", image: "img/18.png",  options:  ["phosphorus ฟอสฟอรัส", "Helium ฮีเลียม", "magnesium แมกนีเซียม", "argon อาร์กอน"], answer: "argon อาร์กอน" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า K?",  image: "img/19.png",   options:  ["boron โบรอน", "Potassium โพแทสเซียม", "Carbon คาร์บอน", "Lithium ลิเทียม"], answer: "Potassium โพแทสเซียม" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Ca?", image: "img/20.png",  options:  ["Aluminum อลูมิเนียม", "phosphorus ฟอสฟอรัส", "calcium แคลเซียม", "argon อาร์กอน"], answer: "calcium แคลเซียม" }, 
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Sc?", image: "img/21.png",   options:  ["scandium สแกนเดียม", "titanium ไทเทเนียม", "Vanadium วานาดียม", "chromium โครเมียม"], answer: "scandium สแกนเดียม" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Ti?", image: "img/22.png",  options:  ["titanium ไทเทเนียม", "Oxygen ออกซิเจน", "boron โบรอน", "Vanadium วานาเดียม"], answer: "titanium ไทเทเนียม" }, 
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า v?", image: "img/23.png",  options:  ["Aluminum อลูมิเนียม", "Nitrogen ไนโตรเจน", "Vanadium วานาดียม", "argon อาร์กอน"], answer: "Vanadium วานาดียม" }, 
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Cr?", image: "img/24.png",   options:  ["scandium สแกนเดียม", "Aluminum อลูมิเนียม", "Vanadium วานาดียม", "chromium โครเมียม"], answer: "chromium โครเมียม" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Mn?", image: "img/25.png",   options:  ["manganese แมงกานีส", "Nitrogen ไนโตรเจน", "Hydrogen ไฮโดรเจน", "argon อาร์กอน"], answer: "manganese แมงกานีส" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Fe?", image: "img/26.png",   options:  ["Iron เหล็ก", "Potassium โพแทสเซียม", "Aluminum อลูมิเนียม", "titanium ไทเทเนียม"], answer: "Iron เหล็ก" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Co?", image: "img/27.png",   options:  ["cobalt โคบอลต์", "Iron เหล็ก", "manganese แมงกานีส", "Nitrogen ไนโตรเจน"], answer: "cobalt โคบอลต์" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Ni?", image: "img/28.png",   options:  ["nickel นิกเกิล", "Iron เหล็ก", "manganese แมงกานีส", "Potassium โพแทสเซียม"], answer: "nickel นิกเกิล" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Cu?", image: "img/29.png",   options:  ["copper ทองแดง", "Aluminum อลูมิเนียม", "Vanadium วานาดียม", "argon อาร์กอน"], answer: "copper ทองแดง" },
+        { question: "ข้อใดคือธาตุที่มีสัญลักษณ์ว่า Zn?", image: "img/30.png",   options:  ["zinc สังกะสี", "manganese แมงกานีส", "copper ทองแดง", "Vanadium วานาดียม"], answer: "zinc สังกะสี" }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    const answers = new Array(questions.length).fill(null); // Stores user answers
+
+    const questionContainer = document.getElementById("question-container");
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const submitBtn = document.getElementById("submit-btn");
+
+    function speak(text) {
+        const speech = new SpeechSynthesisUtterance(text);
+        speechSynthesis.speak(speech);
+    }
+
+    // Display question
+    function displayQuestion(index) {
+        const q = questions[index];
+        questionContainer.innerHTML = `
+            <div class="text-center mb-5">
+                ${q.image ? `<img src="${q.image}" class="rounded mb-3" alt="Question Image" height="350">` : ""}
+                <p><strong>${index + 1}. ${q.question}</strong></p>
+            </div>
+            <div class="text-center">
+                ${q.options.map((opt, i) => `
+                    <input type="radio" class="btn-check" name="q" id="opt${i}" value="${opt}" autocomplete="off">
+                    <label class="btn btn-outline-primary m-5" for="opt${i}" onclick="checkAnswer('${opt}', '${q.answer}')">${opt}</label>
+                `).join('')}
+            </div>
+            <p id="feedback" class="text-danger mt-3"></p>
+        `;
+
+        // Show/hide buttons
+        prevBtn.style.display = index > 0 ? "inline-block" : "none";
+        nextBtn.style.display = "none"; // Hide Next button initially
+        submitBtn.style.display = index === questions.length - 1 ? "inline-block" : "none"; // Show Submit only on last question
+    }
+
+    // Check answer and allow next/submit if correct
+    function checkAnswer(selected, correct) {
+        speak(selected);
+        if (selected === correct) {
+            document.getElementById("feedback").textContent = "Correct! ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ";
+            document.getElementById("feedback").style.color = "green";
+            answers[currentQuestionIndex] = selected;
+
+            // If it's the last question, enable "Submit," otherwise enable "Next"
+            if (currentQuestionIndex === questions.length - 1) {
+                submitBtn.style.display = "inline-block";
+            } else {
+                nextBtn.style.display = "inline-block";
+            }
+        } else {
+            document.getElementById("feedback").textContent = "Try again ❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌";
+            document.getElementById("feedback").style.color = "red";
+            nextBtn.style.display = "none"; // Hide Next button until correct
+            submitBtn.style.display = "none"; // Hide Submit if incorrect
+        }
+    }
+
+    // Next button click
+    nextBtn.addEventListener("click", () => {
+        currentQuestionIndex++;
+        displayQuestion(currentQuestionIndex);
+    });
+
+    // Previous button click
+    prevBtn.addEventListener("click", () => {
+        currentQuestionIndex--;
+        displayQuestion(currentQuestionIndex);
+    });
+
+    // Submit button click
+    submitBtn.addEventListener("click", () => {
+        let correctAnswers = answers.filter(ans => ans !== null).length;
+        alert(username + ", you scored " + correctAnswers + " out of " + questions.length);
+    });
+
+    // Display first question
+    displayQuestion(currentQuestionIndex);
+</script>
+
+</html>
